@@ -9,3 +9,4 @@ wheels/
 # Virtual environments
 .venv
 /src/pawel_aidb/data/
+/data
