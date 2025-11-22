@@ -168,6 +168,11 @@ dependencies = [
     { name = "scikit-learn" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "pawel-aidb" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "beautifulsoup4", specifier = ">=4.12.3" },
@@ -176,6 +181,9 @@ requires-dist = [
     { name = "requests", specifier = ">=2.32.3" },
     { name = "scikit-learn", specifier = ">=1.5.2" },
 ]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pawel-aidb", editable = "." }]
 
 [[package]]
 name = "pymongo"
