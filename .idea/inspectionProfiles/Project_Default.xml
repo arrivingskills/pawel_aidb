@@ -1,0 +1,28 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="PyInterpreterInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="ignoredPackages">
+        <list>
+          <option value="pytest" />
+          <option value="pytest-spark" />
+          <option value="pytest-mock" />
+          <option value="pytest-cov" />
+          <option value="pytest-xdist" />
+          <option value="pytest-timeout" />
+          <option value="chispa" />
+          <option value="black" />
+          <option value="isort" />
+          <option value="flake8" />
+          <option value="pylint" />
+          <option value="coverage" />
+          <option value="factory-boy" />
+          <option value="scikit-learn" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="SqlNoDataSourceInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+  </profile>
+</component>

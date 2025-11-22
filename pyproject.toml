@@ -1,0 +1,23 @@
+[project]
+name = "pawel-aidb"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Andy Miles", email = "andy@arrivingskills.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "pymongo>=4.15.4",
+    "feedparser>=6.0.11",
+    "beautifulsoup4>=4.12.3",
+    "requests>=2.32.3",
+    "scikit-learn>=1.5.2",
+]
+
+[project.scripts]
+pawel-aidb = "pawel_aidb:main"
+
+[build-system]
+requires = ["uv_build>=0.9.7,<0.10.0"]
+build-backend = "uv_build"

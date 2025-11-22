@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MypySettings">
+    <option name="configFilePath" value="$USER_HOME$/.config/mypy.ini" />
+    <option name="mypyExecutable" value="/opt/homebrew/bin/mypy" />
+    <option name="useProjectSdk" value="false" />
+  </component>
+</project>
