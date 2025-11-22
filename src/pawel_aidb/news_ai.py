@@ -13,24 +13,12 @@ from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 
-
-# -----------------------------
-# Data structures
-# -----------------------------
-
-
 @dataclass
 class NewsItem:
     title: str
     url: str
     summary: str = ""
     content: str = ""  # full fetched article text
-
-
-# -----------------------------
-# RSS fetching utilities
-# -----------------------------
-
 
 DEFAULT_FEEDS = [
     # Major English-language outlets (RSS endpoints)
@@ -69,12 +57,6 @@ def pick_random_item(items: Sequence[NewsItem]) -> Optional[NewsItem]:
     if not items:
         return None
     return random.choice(list(items))
-
-
-# -----------------------------
-# Article downloading & cleaning
-# -----------------------------
-
 
 def fetch_article_text(url: str, timeout: int = 15) -> str:
     """
@@ -116,11 +98,6 @@ def fetch_article_text(url: str, timeout: int = 15) -> str:
 def normalize_text(text: str) -> str:
     # Minimal normalization. TF–IDF will handle tokenization/stop-words internally.
     return " ".join(text.replace("\n", " ").split())
-
-
-# -----------------------------
-# AI MODEL: Fake news detection
-# -----------------------------
 
 
 class FakeNewsDetector:
@@ -272,11 +249,6 @@ class FakeNewsDetector:
         pos = sorted([(f, w) for f, w in contributions if w > 0], key=lambda x: x[1], reverse=True)[:top_k]
         neg = sorted([(f, -w) for f, w in contributions if w < 0], key=lambda x: x[1], reverse=True)[:top_k]
         return pos, neg
-
-
-# -----------------------------
-# CLI
-# -----------------------------
 
 
 def cli_main(argv: Optional[Sequence[str]] = None) -> int:
