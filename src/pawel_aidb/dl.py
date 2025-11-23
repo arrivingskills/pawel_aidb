@@ -76,10 +76,10 @@ def _fetch_one(url: str, session: requests.Session, opts: FetchOptions) -> Tuple
                not ctype.startswith("text/"):
                 text = resp.text
                 text = " ".join(text.split())
-                return (resp.url, text)
+                return resp.url, text
 
             text = _extract_visible_text(resp.text)
-            return (resp.url, text)
+            return resp.url, text
         except Exception as e:  # noqa: BLE001 – retry on any error
             last_exc = e
             if attempt >= opts.retries:
