@@ -95,7 +95,6 @@ def _split_news_items(text: str) -> List[str]:
         p = part.strip()
         if not p:
             continue
-        # Secondary split on sentence boundaries: ., ?, ! followed by space and capital/number
         chunks.extend(re.split(r"(?<=[\.\?\!])\s+(?=[A-Z0-9])", p))
 
     items: List[str] = []
