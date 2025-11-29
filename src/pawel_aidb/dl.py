@@ -3,6 +3,7 @@ from __future__ import annotations
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from typing import Dict, Iterable, List, Tuple
+import re
 import time
 
 import requests
@@ -60,8 +61,58 @@ def _extract_visible_text(html: str) -> str:
         tag.decompose()
 
     text = soup.get_text(separator=" ", strip=True)
+    text = _sanitize_text(text)
+    return text
+
+
+def _sanitize_text(text: str) -> str:
+    """Normalize whitespace and remove specific unwanted characters.
+
+    Currently removes the bullet character '•' and then collapses whitespace.
+    """
+    # Replace the bullet with a space so words don't concatenate, then collapse spaces
+    text = text.replace("•", " ")
     text = " ".join(text.split())
     return text
+
+
+def _split_news_items(text: str) -> List[str]:
+    """Split a raw page text into a list of individual news items.
+
+    This is a heuristic splitter suitable for typical news homepages:
+    - First split on line breaks and common inline separators like "|" or bullets.
+    - Then split remaining chunks into sentences by punctuation boundaries.
+    - Filter out overly short fragments and deduplicate while preserving order.
+    """
+    if not text:
+        return []
+
+    # Primary split on newlines or common inline separators
+    primary_parts = re.split(r"[\n\r]+|\s[|•]\s", text)
+
+    chunks: List[str] = []
+    for part in primary_parts:
+        p = part.strip()
+        if not p:
+            continue
+        # Secondary split on sentence boundaries: ., ?, ! followed by space and capital/number
+        chunks.extend(re.split(r"(?<=[\.\?\!])\s+(?=[A-Z0-9])", p))
+
+    items: List[str] = []
+    for ch in chunks:
+        cc = " ".join(ch.split())
+        # Keep fragments that look like actual items (length/word-count heuristic)
+        if len(cc) >= 40 or len(cc.split()) >= 6:
+            items.append(cc)
+
+    # Deduplicate while preserving order
+    seen: set[str] = set()
+    result: List[str] = []
+    for it in items:
+        if it not in seen:
+            seen.add(it)
+            result.append(it)
+    return result
 
 
 def _fetch_one(url: str, session: requests.Session, opts: FetchOptions) -> Tuple[str, str]:
@@ -75,7 +126,7 @@ def _fetch_one(url: str, session: requests.Session, opts: FetchOptions) -> Tuple
             if "text/html" not in ctype and "application/xhtml+xml" not in ctype and \
                not ctype.startswith("text/"):
                 text = resp.text
-                text = " ".join(text.split())
+                text = _sanitize_text(text)
                 return resp.url, text
 
             text = _extract_visible_text(resp.text)
@@ -99,11 +150,11 @@ def download_pages_text(
     retries: int = 2,
     backoff: float = 0.6,
     user_agent: str = DEFAULT_UA,
-) -> Tuple[Dict[str, str], Dict[str, str]]:
+) -> Tuple[Dict[str, List[str]], Dict[str, str]]:
 
     urls_list: List[str] = list(urls)
     opts = FetchOptions(timeout=timeout, retries=retries, backoff=backoff, user_agent=user_agent)
-    texts: Dict[str, str] = {}
+    texts: Dict[str, List[str]] = {}
     errors: Dict[str, str] = {}
 
     if not urls_list:
@@ -114,7 +165,8 @@ def download_pages_text(
     def task(original_url: str):
         try:
             final_url, text = _fetch_one(original_url, session=session, opts=opts)
-            texts[original_url] = text
+            # CHANGED: store a list of individual news items instead of a single string
+            texts[original_url] = _split_news_items(text)
         except Exception as e:  # noqa: BLE001
             errors[original_url] = f"{type(e).__name__}: {e}"
 
@@ -143,4 +195,4 @@ urls = [
     "https://www.bbc.com/"
 ]
 texts, errors = download_pages_text(urls, concurrency=8)
-print(texts)
+

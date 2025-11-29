@@ -3,6 +3,7 @@
   <component name="MypySettings">
     <option name="configFilePath" value="$USER_HOME$/.config/mypy.ini" />
     <option name="mypyExecutable" value="$USER_HOME$/.nix-profile/bin/mypy" />
+    <option name="projectDirectory" value="$PROJECT_DIR$" />
     <option name="useProjectSdk" value="false" />
   </component>
 </project>
