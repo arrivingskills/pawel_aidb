@@ -146,6 +146,15 @@ class FakeNewsDetector:
 
         self._is_trained = False
 
+    def read_data(self, inputs):
+        news = {}
+        for path_input in inputs:
+            with open(path_input, "r") as f:
+                contents = f.read()
+                contents.split("\n")
+                news[f.name] = contents
+        return news
+
     def train_on_embedded(self, verbose: bool = False) -> None:
         """
         Train on a small, embedded sample.
@@ -153,35 +162,12 @@ class FakeNewsDetector:
         The examples below are short paraphrases intended for demo only. Replace
         with your actual dataset for meaningful accuracy.
         """
-        X: List[str] = [
-            # Real-ish headlines/text fragments
-            "WHO announces new guidance on seasonal influenza vaccination program",
-            "Government passes bipartisan infrastructure bill to repair bridges",
-            "Scientists publish peer-reviewed study on climate change impacts",
-            "Local authorities confirm reopening of schools after winter break",
-            "NASA schedules launch window for satellite to monitor weather",
-            "Central bank maintains interest rates amid stable inflation",
-            "New policy expands access to affordable broadband in rural areas",
-            "University researchers develop battery with improved energy density",
-            "Court upholds consumer protections in landmark ruling",
-            "International summit focuses on public health cooperation",
-
-            # Fake-ish clickbait/conspiracy style fragments
-            "Secret cure for all diseases finally exposed by insider doctor!!!",
-            "Shocking proof that the moon landing was filmed in a studio",
-            "Celeb reveals miracle pill melts fat without diet or exercise",
-            "Government hides alien contact evidence from the public",
-            "You won't believe what this herb can do to erase your debt",
-            "Elites plan to control weather using hidden satellites",
-            "Miracle water reverses aging in just 7 days, scientists stunned",
-            "5G towers cause mind control, experts warn in leaked memo",
-            "Viral video shows teleportation caught on live TV",
-            "Ancient prophecy proves world will end next Tuesday",
-        ]
-        y: List[int] = [
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  # 0 = real
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  # 1 = fake
-        ]
+        news = self.read_data([r"data\Fake\compressedFake.csv",r"data\True\compressedFake.csv"])
+        print(news)
+        X: List[str] = news['compressedFake']+news['compressedTrue']
+        y: List[int] = [[0]*news['compressedTrue'], [1]*news['compressedFake']]
+        # 0 = real
+        # 1 = fake
 
         # Split for a tiny internal check (still not representative)
         X_train, X_test, y_train, y_test = train_test_split(
