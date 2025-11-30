@@ -162,7 +162,7 @@ class FakeNewsDetector:
         The examples below are short paraphrases intended for demo only. Replace
         with your actual dataset for meaningful accuracy.
         """
-        news = self.read_data([r"data/Fake/compressedFake.csv",r"data/True/compressedTrue.csv"])
+        news = self.read_data([r"data\Fake\compressedFake.csv",r"data\True\compressedTrue.csv"])
         print(news)
         X: List[str] = news['compressedFake']+news['compressedTrue']
         y: List[int] = [[0]*news['compressedTrue'], [1]*news['compressedFake']]
