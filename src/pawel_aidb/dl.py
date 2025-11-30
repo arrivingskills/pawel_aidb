@@ -194,4 +194,6 @@ urls = [
     "https://www.bbc.com/"
 ]
 texts, errors = download_pages_text(urls, concurrency=8)
+for _, text_lines in texts.items():
+    print(len(text_lines))
 
