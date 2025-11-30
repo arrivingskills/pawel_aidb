@@ -151,7 +151,7 @@ class FakeNewsDetector:
         for path_input in inputs:
             with open(path_input, "r") as f:
                 contents = f.read()
-                contents.split("\n")
+                contents = contents.split("\n")
                 news[f.name] = contents
         return news
 
@@ -162,17 +162,17 @@ class FakeNewsDetector:
         The examples below are short paraphrases intended for demo only. Replace
         with your actual dataset for meaningful accuracy.
         """
-        news = self.read_data([r"data\Fake\compressedFake.csv",r"data\True\compressedTrue.csv"])
-        print(news)
-        X: List[str] = news['compressedFake']+news['compressedTrue']
-        y: List[int] = [[0]*news['compressedTrue'], [1]*news['compressedFake']]
+        import pprint
+        news = self.read_data(["data/Fake/compressedFake.csv","data/True/compressedTrue.csv"])
+        X = news['data/Fake/compressedFake.csv']+news['data/True/compressedTrue.csv']
+
+        y = [0] * len(news['data/True/compressedTrue.csv']) + [1] * len(news['data/Fake/compressedFake.csv'])
         # 0 = real
         # 1 = fake
-
         # Split for a tiny internal check (still not representative)
-        X_train, X_test, y_train, y_test = train_test_split(
+        X_train, X_test, y_train, y_test = (train_test_split(
             X, y, test_size=0.25, random_state=42, stratify=y
-        )
+        ))
 
         self.model.fit(X_train, y_train)
         self._is_trained = True
@@ -242,8 +242,7 @@ def cli_main(argv: Optional[Sequence[str]] = None) -> int:
         prog="pawel-aidb",
         description=(
             "Fetch a random news article from popular RSS feeds and assess the\n"
-            "likelihood that the text is fake using a small, interpretable AI model.\n\n"
-            "NOTE: Model is trained on a tiny embedded dataset for demonstration only."
+            "likelihood that the text is fake using a small, interpretable AI model."
         ),
     )
 
